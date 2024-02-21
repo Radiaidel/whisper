@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\URL;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProfileController extends Controller
 {
@@ -16,8 +18,17 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $url = URL::temporarySignedRoute(
+            'profile.edit',
+            now()->addHour(),
+            ['user' => auth()->id()]
+        );
+        $qrCode = QrCode::size(100)->generate($url);
+        // dd(''. $qrCode);
         return view('profile.edit', [
             'user' => $request->user(),
+            'url'=> $url,
+            'qrCode' => $qrCode,
         ]);
     }
 

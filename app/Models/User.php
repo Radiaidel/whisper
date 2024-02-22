@@ -45,4 +45,22 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'user_id');
+    }
+
+    // Relation avec les demandes d'amis reçues
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'friend_id');
+    }
+
+    // Relation avec les amis
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friend_requests', 'user_id', 'friend_id')
+            ->wherePivot('request_status', 'accepted');
+    }
 }

@@ -10,11 +10,11 @@
         <div class="mt-8 flex justify-around items-center">
             <div class="text-center">
                 <div class="text-lg font-semibold">Total des amis</div>
-                <div class="text-gray-500">100</div>
+                <div class="text-gray-500">{{$totalFriends}}</div>
             </div>
             <div class="text-center">
                 <div class="text-lg font-semibold">Amis en commun</div>
-                <div class="text-gray-500">50</div>
+                <div class="text-gray-500">{{$commonFriends}}</div>
             </div>
         </div>
         <div class="mt-8  justify-center text-center">

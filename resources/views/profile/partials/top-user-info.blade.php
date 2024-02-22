@@ -3,7 +3,7 @@
 
         <div class="flex items-center space-x-4">
             <div class="w-16 h-16 rounded-full overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="Image de profil" class="w-full h-full object-cover">
+                <img src="{{asset('storage/'. auth()->user()->profile_image)}}" alt="Image de profil" class="w-full h-full object-cover">
             </div>
             <div>
                 <div class="font-semibold text-lg">{{auth()->user()->unique_identifier}}</div>

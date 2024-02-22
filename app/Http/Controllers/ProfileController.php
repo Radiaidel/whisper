@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\URL;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Cache;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -19,30 +20,37 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-
-
+        $user = null;
+    
+        // Vérifie si l'URL contient un paramètre "user"
+        if ($request->has('profile_user')) {
+            $userId = $request->input('profile_user');
+            $user = User::find($userId);
+        }
+    // dd($user);
         $cachedUrl = Cache::get('profile_link_' . auth()->id());
-
+    
         if (!$cachedUrl) {
             $url = URL::temporarySignedRoute(
                 'profile.edit',
                 now()->addHour(),
-                ['user' => auth()->id()]
+                ['profile_user' => auth()->id()]
             );
-
+    
             Cache::put('profile_link_' . auth()->id(), $url, now()->addHour());
         } else {
             $url = $cachedUrl;
         }
-
+    
         $qrCode = QrCode::size(100)->generate($url);
-
+    
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user ?: $request->user(),
             'url' => $url,
             'qrCode' => $qrCode,
         ]);
     }
+    
 
     /**
      * Update the user's profile information.

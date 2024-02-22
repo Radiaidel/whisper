@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\URL;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {
@@ -18,16 +19,29 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $url = URL::temporarySignedRoute(
-            'profile.edit',
-            now()->addHour(),
-            ['user' => auth()->id()]
-        );
+
+
+        $cachedUrl = Cache::get('profile_link_' . auth()->id());
+
+        if (!$cachedUrl) {
+            // Générer un nouveau lien
+            $url = URL::temporarySignedRoute(
+                'profile.edit',
+                now()->addHour(),
+                ['user' => auth()->id()]
+            );
+
+            // Stocker le lien en cache avec une durée de vie d'une heure
+            Cache::put('profile_link_' . auth()->id(), $url, now()->addHour());
+        } else {
+            $url = $cachedUrl;
+        }
+
         $qrCode = QrCode::size(100)->generate($url);
         // dd(''. $qrCode);
         return view('profile.edit', [
             'user' => $request->user(),
-            'url'=> $url,
+            'url' => $url,
             'qrCode' => $qrCode,
         ]);
     }
